@@ -1,0 +1,97 @@
+// line 2 : slack api의 Webhook URL 붙여넣기 
+const slackWebhookUrl = 'https://hooks.slack.com/services/###code##';
+const statusColumn = 'F'; // status column 상황에 맞게 변경 
+const nameColumn = 'P'; // file name column 상황에 맞게 변경 
+const fileColumn = 'W'; // file column - HKPP는 현재 사용하지 않고 있음 
+const showDocumentName = true; 
+
+function notifyOnRangeUpdate(event) {
+  const document = event.source;
+  const cell = document.getCurrentCell();
+  const cellCoordinates = cell.getA1Notation();
+
+  // Get leading letter(s) of cell (corresponds to column)
+  const columnLetter = /\D+/.exec(cellCoordinates)[0];
+
+  // Only trigger if changing status column
+  if (columnLetter !== statusColumn.toUpperCase()) { return; }
+
+  const statusCellValue = cell.getDisplayValue();
+
+  // Don't trigger if status is deleted
+  if (!statusCellValue) { return; }
+  
+  let statusEmoji = '';
+  switch (statusCellValue) {
+    case 'Open':
+      statusEmoji = '🌟';
+      break;
+    case 'In Progress':
+      statusEmoji = '👷';
+      break;
+    case 'Completed':
+      statusEmoji = '✅';
+      break;
+    case 'Canceled':
+      statusEmoji = '🚫';
+      break;
+    case 'On Hold':
+      statusEmoji = '⏸️';
+  }
+
+  const row = cell.getRow();
+  const nameCell = document.getRange(nameColumn + row);
+  let nameCellValue = nameCell.getDisplayValue() ?
+                        nameCell.getDisplayValue() :
+                        '신규요청';
+  
+  const nameCellUrl = nameCell.getRichTextValue().getLinkUrl();
+  if (nameCellUrl) {
+    nameCellValue = `<${nameCellUrl}|${nameCellValue}>`;
+  }
+
+  let messageText = '>' +
+                    statusEmoji +
+                    '  *[' +
+                    statusCellValue +
+                    ']*\n>' +
+                    nameCellValue;
+
+  // Include direct link to translated file, if on sheet
+  if (fileColumn) {
+    const fileCell = document.getRange(fileColumn + row);
+    const fileCellUrl = fileCell.getRichTextValue().getLinkUrl();
+    if (fileCellUrl) {
+      messageText += '\n' + `(<${fileCellUrl}|번역파일>)`;
+
+    }
+  }
+
+  if (showDocumentName) {
+    messageText = document.getName() +
+                  '\n' + 
+                  messageText;
+  }
+  
+  let options = {
+    "method": "post",
+    "contentType": "application/json",
+    "payload": JSON.stringify({ "text": messageText })
+  };
+
+  return UrlFetchApp.fetch(slackWebhookUrl, options);
+}
+
+function createTrigger() {
+  ScriptApp.newTrigger('notifyOnRangeUpdate')
+           .forSpreadsheet(SpreadsheetApp.getActive())
+           .onEdit()
+           .create();
+}
+
+function removeTriggers() {
+  const triggers = ScriptApp.getProjectTriggers();
+  for (let i = 0; i < triggers.length; i++) {
+    ScriptApp.deleteTrigger(triggers[i]);
+  }
+}
