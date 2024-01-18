@@ -1,6 +1,6 @@
 # slackNotification
 구글 시트의 Status 열 현황이 Open - In Progress - Completed 변동 시 슬랙 알림을 보냅니다. </br>
-slack api 권한 및 install 과정의 **코드**는 따로 문의주시면 전달드리겠습니다. 
+slack api 권한은 따로 요청주세요. 
 
 # slack api 
 1. Slack api > Features > Incoming Webhooks - Add New Webhook to Workspace
