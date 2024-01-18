@@ -3,7 +3,7 @@
 slack api 권한은 따로 요청주세요. 
 
 # slack api 
-1. <a href="https://api.slack.com/apps/A06ELLK941F/incoming-webhooks" target="_blank"> Slack api > Features > Incoming Webhooks - Add New Webhook to Workspace
+1. <a href="https://api.slack.com/apps/A06ELLK941F/incoming-webhooks" target="_blank"> Slack api > Features > Incoming Webhooks - Add New Webhook to Workspace </a>
 3. 메시지 전송할 채널 선택, Allow
 4. Webhook URL copy 
 
