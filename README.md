@@ -3,9 +3,9 @@
 slack api 권한은 따로 요청주세요. 
 
 # slack api 
-1. Slack api > Features > Incoming Webhooks - Add New Webhook to Workspace
-2. 메시지 전송할 채널 선택, Allow
-3. Webhook URL copy 
+1. <a href=“https://api.slack.com/apps/A06ELLK941F/incoming-webhooks"> Slack api > Features > Incoming Webhooks - Add New Webhook to Workspace
+3. 메시지 전송할 채널 선택, Allow
+4. Webhook URL copy 
 
 # google sheet (install)
 1. PO sheet > 확장 프로그램 > Apps Script
